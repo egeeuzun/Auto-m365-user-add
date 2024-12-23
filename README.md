@@ -21,8 +21,6 @@ Create a configuration file and fill it with your Azure AD application ID, tenan
 CLIENT_ID = 'YOUR_APPLICATION_ID'
 CLIENT_SECRET = 'YOUR_APPLICATION_SECRET'
 TENANT_ID = 'YOUR_TENANT_ID'
-Use code with caution.
-Python
 Usage
 Run the script
 Customization
