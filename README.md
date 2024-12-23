@@ -16,7 +16,7 @@ Install the necessary libraries:
 
 pip install msgraph-beta msal
 
-Create a configuration file (for example config.py) and fill it with your Azure AD application ID, tenant ID and secret key:
+Create a configuration file and fill it with your Azure AD application ID, tenant ID and secret key:
 
 CLIENT_ID = 'YOUR_APPLICATION_ID'
 CLIENT_SECRET = 'YOUR_APPLICATION_SECRET'
