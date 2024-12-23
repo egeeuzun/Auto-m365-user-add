@@ -1,0 +1,68 @@
+import msal
+import requests
+
+# Azure AD app credentials
+CLIENT_ID = 'your_client_id'
+CLIENT_SECRET = 'your_client_secret'
+TENANT_ID = 'your_tenant_id'
+
+# Microsoft Graph API endpoints
+AUTHORITY = f'https://login.microsoftonline.com/{TENANT_ID}'
+SCOPE = ['https://graph.microsoft.com/.default']
+GRAPH_API_ENDPOINT = 'https://graph.microsoft.com/v1.0'
+
+# MSAL client
+app = msal.ConfidentialClientApplication(CLIENT_ID, authority=AUTHORITY, client_credential=CLIENT_SECRET)
+
+def get_access_token():
+    result = app.acquire_token_for_client(scopes=SCOPE)
+    if 'access_token' in result:
+        return result['access_token']
+    else:
+        raise Exception('Could not acquire access token')
+
+def create_user(user_data):
+    access_token = get_access_token()
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+    response = requests.post(f'{GRAPH_API_ENDPOINT}/users', headers=headers, json=user_data)
+    return response.json()
+
+def assign_license(user_id, license_data):
+    access_token = get_access_token()
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+    response = requests.post(f'{GRAPH_API_ENDPOINT}/users/{user_id}/assignLicense', headers=headers, json=license_data)
+    return response.json()
+
+# Example usage
+new_user = {
+    "accountEnabled": True,
+    "displayName": "John Doe",
+    "mailNickname": "johndoe",
+    "userPrincipalName": "johndoe@yourdomain.com",
+    "passwordProfile": {
+        "forceChangePasswordNextSignIn": True,
+        "password": "your_password"
+    }
+}
+
+license_data = {
+    "addLicenses": [
+        {
+            "skuId": "your_sku_id"
+        }
+    ],
+    "removeLicenses": []
+}
+
+created_user = create_user(new_user)
+print(created_user)
+
+user_id = created_user['id']
+assigned_license = assign_license(user_id, license_data)
+print(assigned_license)
